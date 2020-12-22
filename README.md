@@ -14,7 +14,6 @@ Here are some use cases (abilities your project needs to have):
 5) Make the calculator work! You’ll need to store the first number that is input into the calculator when a user presses an operator, and also save which operation has been chosen and then operate() on them when the user presses the “=” key.
   h) You should already have the code that can populate the display, so once operate() has been called, update the display with the ‘solution’ to the operation.
   i) This is the hardest part of the project. You need to figure out how to store all the values and call the operate function with them. Don’t feel bad if it takes you a while to figure out the logic.
-6) Gotchas: watch out for and fix these bugs if they show up in your code:
 
 Pressing = before entering all of the numbers or an operator could cause problems!
 Pressing “clear” should wipe out any existing data.. make sure the user is really starting fresh after pressing “clear”
