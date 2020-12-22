@@ -1,0 +1,12 @@
+{
+  "name": "Calculator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Anil Pak",
+  "license": "MIT",
+  "private": null,
+  "devDependencies": {
+    "eslint": "^7.16.0",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
