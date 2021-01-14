@@ -49,7 +49,7 @@ decimal.addEventListener("click", displayDecimal);
 sign.addEventListener("click", displaySign);
 
 numbers.forEach((number) => {
-  number.addEventListener("click", () => displayNumber(number.textContent));
+  number.addEventListener("click", () => displayNumber(number.innerText));
 });
 
 function setKey(e) {
@@ -63,35 +63,35 @@ function setKey(e) {
 }
 
 function displayNumber(number) {
-  if (display.textContent === "0") {
-    display.textContent = number;
+  if (display.innerText === "0") {
+    display.innerText = number;
   } else {
-    display.textContent += number;
+    display.innerText += number;
   }
 }
 
 function displayDecimal() {
-  if (!display.textContent.includes(".")) {
-    display.textContent += ".";
+  if (!display.innerText.includes(".")) {
+    display.innerText += ".";
   }
 }
 
 function deleteNumber() {
-  if (display.textContent !== "0") {
-    display.textContent = display.textContent.toString().slice(0, -1);
+  if (display.innerText !== "0") {
+    display.innerText = display.innerText.toString().slice(0, -1);
   }
-  if (display.textContent === "") {
-    display.textContent = "0";
+  if (display.innerText === "") {
+    display.innerText = "0";
   }
 }
 
 function clearScreen() {
-  display.textContent = "0";
+  display.innerText = "0";
   firstNum = "";
   secondNum = "";
   operation = null;
 }
 
 function displaySign() {
-  display.textContent = -display.textContent;
+  display.innerText = -display.innerText;
 }
