@@ -1,4 +1,4 @@
-// // console.log("Hello from inside");
+// console.log("Hello from inside");
 function add(x, y) {
   return parseFloat(x) + parseFloat(y);
 }
@@ -29,57 +29,69 @@ function operate(x, operator, y) {
   }
 }
 
-const calculator = document.getElementById("calculator");
-const keys = calculator.querySelector(".main-container");
+const numbers = document.querySelectorAll("[data-action=number]");
+const operators = document.querySelectorAll("[data-action=operator]");
+const calculate = document.querySelector("[data-action=equal]");
+const deleteNum = document.querySelector("[data-action=delete]");
+const clear = document.querySelector("[data-action=clear]");
+const decimal = document.querySelector("[data-action=decimal]");
+const sign = document.querySelector("[data-action=sign]");
 const display = document.querySelector(".display");
 
-keys.addEventListener("click", (e) => {
-  if (e.target.matches("button")) {
-    // console.log("It is working! Nice!");
-    const key = e.target;
-    const action = key.dataset.action;
-    // console.log(action);
-    const keyContent = key.textContent;
-    const displayNum = display.textContent;
-    const previousKeyType = calculator.dataset.previousKeyType;
+let firstNum = "";
+let secondNum = "";
+let operation = null;
 
-    if (!action) {
-      if (displayNum === "0" || previousKeyType === "operator") {
-        display.textContent = keyContent;
-      } else {
-        display.textContent = displayNum + keyContent;
-      }
-    }
+window.addEventListener("keydown", setKey);
+deleteNum.addEventListener("click", deleteNumber);
+clear.addEventListener("click", clearScreen);
+decimal.addEventListener("click", displayDecimal);
+sign.addEventListener("click", displaySign);
 
-    if (
-      action === "add" ||
-      action === "subtract" ||
-      action === "multiply" ||
-      action === "divide"
-    ) {
-      calculator.dataset.previousKeyType = "operator";
-      calculator.dataset.firstValue = displayNum;
-      calculator.dataset.operator = action;
-    }
-
-    if (action === "decimal") {
-      display.textContent = displayNum + ".";
-    }
-
-    if (action === "clear") {
-      display.textContent = "0";
-    }
-
-    if (action === "sign") {
-      display.textContent = -display.textContent;
-    }
-
-    if (action === "calculate") {
-      const firstValue = calculator.dataset.firstValue;
-      const operator = calculator.dataset.operator;
-      const secondValue = displayNum;
-
-      display.textContent = operate(firstValue, operator, secondValue);
-    }
-  }
+numbers.forEach((number) => {
+  number.addEventListener("click", () => displayNumber(number.textContent));
 });
+
+function setKey(e) {
+  if (e.key >= 0 && e.key <= 9) displayNumber(e.key);
+  if (e.key === ".") displayDecimal(e.key);
+  if (e.key === "=" || e.key === "Enter") calculateNumber(e.key);
+  if (e.key === "Backspace") deleteNumber(e.key);
+  if (e.key === "Delete") clearScreen(e.key);
+  if (e.key === "+" || e.key === "-" || e.key === "*" || e.key === "/")
+    setOperation(e.key);
+}
+
+function displayNumber(number) {
+  if (display.textContent === "0") {
+    display.textContent = number;
+  } else {
+    display.textContent += number;
+  }
+}
+
+function displayDecimal() {
+  if (!display.textContent.includes(".")) {
+    display.textContent += ".";
+  }
+}
+
+function deleteNumber() {
+  if (display.textContent !== "0") {
+    display.textContent = display.textContent.toString().slice(0, -1);
+  }
+  if (display.textContent === "") {
+    display.textContent = "0";
+  }
+}
+
+function clearScreen() {
+  display.textContent = "0";
+  firstNum = "";
+  secondNum = "";
+  operation = null;
+}
+
+function displaySign() {
+  display.textContent = -display.textContent;
+}
