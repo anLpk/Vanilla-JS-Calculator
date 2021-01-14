@@ -62,7 +62,12 @@ button {
 }
 
 .clear,
+.delete,
 .sign,
 .percentage {
   background-color: #fafcc2;
+}
+
+.delete {
+  font-size: 1.4em;
 }
