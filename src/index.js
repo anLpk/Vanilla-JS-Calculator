@@ -1,4 +1,3 @@
-// console.log("Hello from inside");
 function add(x, y) {
   return parseFloat(x) + parseFloat(y);
 }
@@ -15,13 +14,13 @@ function multiply(x, y) {
   return parseFloat(x) * parseFloat(y);
 }
 
-function operate(x, operator, y) {
+function operate(x, y, operator) {
   if (operator === "add") {
     return add(x, y);
   } else if (operator === "subtract") {
     return subtract(x, y);
   } else if (operator === "divide") {
-    return divide(x, y);
+    return divide(x, y).toFixed(5);
   } else if (operator === "multiply") {
     return multiply(x, y);
   } else {
@@ -29,44 +28,111 @@ function operate(x, operator, y) {
   }
 }
 
-const numbers = document.querySelectorAll("[data-action=number]");
-const operators = document.querySelectorAll("[data-action=operator]");
-const calculate = document.querySelector("[data-action=equal]");
-const deleteNum = document.querySelector("[data-action=delete]");
-const clear = document.querySelector("[data-action=clear]");
-const decimal = document.querySelector("[data-action=decimal]");
-const sign = document.querySelector("[data-action=sign]");
+const numbers = document.querySelectorAll(".number");
+const operators = document.querySelectorAll(".operator");
 const display = document.querySelector(".display");
+const calculate = document.getElementById("calculate");
+const clear = document.querySelector(".clear");
+const backSpace = document.querySelector(".delete");
+const decimal = document.querySelector(".decimal");
+const sign = document.querySelector(".sign");
+const digits = display.innerText.length;
 
-let firstNum = "";
-let secondNum = "";
-let operation = null;
+let currentOperator = null;
+let firstNum = null;
+let secondNum = null;
+let resetScreen = false;
+let result = null;
 
-window.addEventListener("keydown", setKey);
-deleteNum.addEventListener("click", deleteNumber);
-clear.addEventListener("click", clearScreen);
+numbers.forEach((number) => {
+  number.addEventListener("click", (e) => {
+    if (resetScreen) {
+      clearScreen();
+    }
+    displayNumber(e.target.innerText);
+    resetScreen = false;
+  });
+});
+
+operators.forEach((operator) => {
+  operator.addEventListener("click", (e) => {
+    setOperand(showNumber());
+    setTheOperator(e.target.id);
+    resetScreen = true;
+  });
+});
+
+calculate.addEventListener("click", () => {
+  result = calculateResult();
+  clearScreen();
+  if (result) {
+    displayNumber(result);
+  }
+});
+
+clear.addEventListener("click", () => {
+  clearAllValues();
+});
+
+backSpace.addEventListener("click", deleteNumber);
 decimal.addEventListener("click", displayDecimal);
 sign.addEventListener("click", displaySign);
 
-numbers.forEach((number) => {
-  number.addEventListener("click", () => displayNumber(number.innerText));
-});
-
-function setKey(e) {
-  if (e.key >= 0 && e.key <= 9) displayNumber(e.key);
-  if (e.key === ".") displayDecimal(e.key);
-  if (e.key === "=" || e.key === "Enter") calculateNumber(e.key);
-  if (e.key === "Backspace") deleteNumber(e.key);
-  if (e.key === "Delete") clearScreen(e.key);
-  if (e.key === "+" || e.key === "-" || e.key === "*" || e.key === "/")
-    setOperation(e.key);
+function displayNumber(number) {
+  display.innerText += number;
 }
 
-function displayNumber(number) {
-  if (display.innerText === "0") {
-    display.innerText = number;
+function showNumber() {
+  return display.innerText;
+}
+
+function setTheOperator(operator) {
+  if (currentOperator == null) {
+    currentOperator = operator;
+  } else if (firstNum && secondNum) {
+    result = operate(Number(firstNum), Number(secondNum), currentOperator);
+    clearScreen();
+    displayNumber(result);
+    firstNum = result;
+    secondNum = null;
+    currentOperator = operator;
+  }
+}
+
+function setOperand(value) {
+  if (firstNum == null) {
+    firstNum = value;
   } else {
-    display.innerText += number;
+    secondNum = value;
+  }
+}
+
+function clearScreen() {
+  display.innerText = "";
+}
+
+function clearAllValues() {
+  firstNum = null;
+  secondNum = null;
+  currentOperator = null;
+  clearScreen();
+}
+
+function calculateResult() {
+  if (firstNum && currentOperator && !resetScreen && !secondNum) {
+    setOperand(showNumber());
+    return operate(Number(firstNum), Number(secondNum), currentOperator);
+  } else {
+    return false;
+  }
+}
+
+function deleteNumber() {
+  if (display.innerText !== "0") {
+    display.innerText = display.innerText.toString().slice(0, -1);
+  }
+  if (display.innerText === "") {
+    display.innerText = "";
   }
 }
 
@@ -76,22 +142,15 @@ function displayDecimal() {
   }
 }
 
-function deleteNumber() {
-  if (display.innerText !== "0") {
-    display.innerText = display.innerText.toString().slice(0, -1);
-  }
-  if (display.innerText === "") {
-    display.innerText = "0";
-  }
-}
-
-function clearScreen() {
-  display.innerText = "0";
-  firstNum = "";
-  secondNum = "";
-  operation = null;
-}
-
 function displaySign() {
   display.innerText = -display.innerText;
+}
+
+window.addEventListener("keydown", setKey);
+
+function setKey(e) {
+  if (e.key >= 0 && e.key <= 9) displayNumber(e.key);
+  if (e.key === ".") displayDecimal(e.key);
+  if (e.key === "Backspace") deleteNumber(e.key);
+  if (e.key === "Delete") clearScreen(e.key);
 }
